@@ -1,0 +1,37 @@
+<div class="container">
+  <form class="form-horizontal" [formGroup]="newCustomerForm" (ngSubmit)="addNewCustomer()">
+    
+    <div class="form-group" [ngClass]="checkError('name')">
+      <label class="form-control-label" for="name">Nome</label>
+      <input type="text" class="form-control" formControlName="name" id="name" placeholder="Insira seu nome completo">      
+      <div *ngIf="touchedVerify('name')" class="form-control-feedback">Por favor, insira um nome válido.</div>      
+    </div>    
+
+    <div class="form-group" [ngClass]="checkError('email')">
+      <label class="form-control-label" for="email">Email</label>
+      <input type="email" class="form-control" formControlName="email" id="email" aria-describedby="emailHelp">
+      <div *ngIf="touchedVerify('email')" class="form-control-feedback">Por favor, insira um endereço de e-mail válido.</div>      
+      <small id="emailHelp" class="form-text text-muted">Nós nunca compartilharemos seu email com ninguém.</small>
+    </div>
+
+    <div class="form-group" [ngClass]="checkError('phone')">
+      <label class="form-control-label" for="name">Telefone</label>
+      <input type="text" class="form-control" formControlName="phone" id="phone" placeholder="Telefone preferencial">      
+      <div *ngIf="touchedVerify('phone')" class="form-control-feedback">Por favor, insira o número do telefone.</div>      
+    </div>
+
+    <div class="form-group" [ngClass]="checkError('cpf')">
+      <label class="form-control-label" for="name">CPF</label>
+      <input type="text" class="form-control" formControlName="cpf" id="cpf" placeholder="Telefone preferencial">      
+      <div *ngIf="touchedVerify('cpf')" class="form-control-feedback">Por favor, insira o número do telefone.</div>      
+    </div>
+
+    <button type="button" class="btn btn-secondary" (click)="formReset()">Clean</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  <hr>
+  {{ newCustomerForm.valid }} <br>		
+  {{ newCustomerForm.value | json }}
+
+</div>
