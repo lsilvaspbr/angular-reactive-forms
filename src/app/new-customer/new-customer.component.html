@@ -1,37 +1,129 @@
 <div class="container">
-  <form class="form-horizontal" [formGroup]="newCustomerForm" (ngSubmit)="addNewCustomer()">
+  <form [formGroup]="newCustomerForm" (ngSubmit)="addNewCustomer()" novalidate>
     
-    <div class="form-group" [ngClass]="checkError('name')">
-      <label class="form-control-label" for="name">Nome</label>
-      <input type="text" class="form-control" formControlName="name" id="name" placeholder="Insira seu nome completo">      
-      <div *ngIf="touchedVerify('name')" class="form-control-feedback">Por favor, insira um nome válido.</div>      
-    </div>    
+    <div class="row">
 
-    <div class="form-group" [ngClass]="checkError('email')">
-      <label class="form-control-label" for="email">Email</label>
-      <input type="email" class="form-control" formControlName="email" id="email" aria-describedby="emailHelp">
-      <div *ngIf="touchedVerify('email')" class="form-control-feedback">Por favor, insira um endereço de e-mail válido.</div>      
-      <small id="emailHelp" class="form-text text-muted">Nós nunca compartilharemos seu email com ninguém.</small>
+      <!-- FIRST NAME -->
+      <div class="form-group col-md-4" [ngClass]="checkError('firstName')">          
+        <label class="form-control-label" for="firstName">Nome <em>*</em></label>
+        <input type="text" class="form-control" formControlName="firstName" id="firstName" placeholder="Ex: Lucas" maxlength="50">
+        <div *ngIf="touchedVerify('firstName')" class="form-control-feedback">Por favor, insira um nome válido.</div>
+      </div>
+    
+      <!-- LAST NAME -->
+      <div class="form-group col-md-5" [ngClass]="checkError('lastName')">
+        <label class="form-control-label" for="lastName">Sobrenome <em>*</em></label>
+        <input type="text" class="form-control" formControlName="lastName" id="lastName" placeholder="Ex: Renan da Silva" maxlength="60">
+        <div *ngIf="touchedVerify('lastName')" class="form-control-feedback">Por favor, insira um nome válido.</div>
+      </div>
+
+      <!-- CPF -->
+      <div class="form-group col-md-3" [ngClass]="checkError('cpf')">
+        <label class="form-control-label" for="cpf">Número do CPF <em>*</em></label>
+        <input type="text" class="form-control" formControlName="cpf" id="cpf" placeholder="Digite apenas números" [textMask]="{mask: cpfMask}">
+        <div *ngIf="touchedVerify('cpf')" class="form-control-feedback">O cpf informado é invalido.</div>
+      </div>
+
+    </div>   
+
+    <div class="row">     
+
+      <!-- EMAIL -->
+      <div class="form-group col-md-6" [ngClass]="checkError('email')">
+        <label class="form-control-label" for="email">Email <em>*</em></label>
+        <input type="email" class="form-control" formControlName="email" id="email" placeholder="Ex: joao@seuemail.com.br" aria-describedby="emailHelp" maxlength="60">
+        <div *ngIf="touchedVerify('email')" class="form-control-feedback">Por favor, insira um endereço de e-mail válido.</div>        
+      </div>  
+      
+      <!-- PHONE -->
+      <div class="form-group col-md-4" [ngClass]="checkError('phone')">
+        <label class="form-control-label" for="phone">Telefone <em>*</em></label>
+        <input type="text" class="form-control" formControlName="phone" id="phone" placeholder="Ex: (99) 99999-9999" [textMask]="{mask: phoneMask}">
+        <div *ngIf="touchedVerify('phone')" class="form-control-feedback">Por favor, insira o número do telefone.</div>
+      </div>
+
+      <!-- GENDER -->
+      <div class="form-group col-md-2" [ngClass]="checkError('gender')">
+        <label class="form-control-label" for="gender">Sexo <em>*</em></label>        
+        <select class="form-control custom-select" formControlName="gender" id="gender" name="gender">
+          <option [ngValue]="null">Selecione...</option>
+          <option *ngFor="let gender of genders" [ngValue]="gender">{{ gender }}</option>
+        </select>
+        <div *ngIf="touchedVerify('gender')" class="form-control-feedback">Campo obrigatório.</div>
+      </div>
+
+    </div>               
+    
+    <!-- ZIPCODE -->
+    <div class="row">
+
+      <div class="form-group col-md-3" [ngClass]="checkError('zipCode')">
+        <label class="form-control-label" for="zipCode">CEP <em>*</em></label>
+        <input type="text" class="form-control" formControlName="zipCode" id="zipCode" placeholder="Digite apenas números" (blur)="searchZipCode($event.target.value)" [textMask]="{mask: zipCodeMask}">
+        <div *ngIf="touchedVerify('zipCode')" class="form-control-feedback">Digite um CEP válido.</div>
+      </div>      
+      <div class="form-group col-md-6">        
+        <a href="http://www.buscacep.correios.com.br/servicos/dnec/index.do" target="_blank" class="cep-link">Não sei meu CEP</a>
+      </div>
     </div>
 
-    <div class="form-group" [ngClass]="checkError('phone')">
-      <label class="form-control-label" for="name">Telefone</label>
-      <input type="text" class="form-control" formControlName="phone" id="phone" placeholder="Telefone preferencial">      
-      <div *ngIf="touchedVerify('phone')" class="form-control-feedback">Por favor, insira o número do telefone.</div>      
+    <!-- ADDRESS -->
+    <div class="row">
+      <div class="form-group col-md-6" [ngClass]="checkError('street')">
+        <label class="form-control-label" for="street">Endereço <em>*</em></label>
+        <input type="text" class="form-control input-readonly" formControlName="street" id="street" placeholder="" tabindex="-1" maxlength="70" readonly>
+        <div *ngIf="touchedVerify('street')" class="form-control-feedback"></div>
+      </div>
+
+      <!-- NUMBER -->
+      <div class="form-group col-md-2" [ngClass]="checkError('number')">
+        <label class="form-control-label" for="number">Número <em>*</em></label>
+        <input type="text" class="form-control" formControlName="number" id="number" placeholder="Ex: 462" maxlength="10">
+        <div *ngIf="touchedVerify('number')" class="form-control-feedback">Campo obrigatório.</div>
+      </div>
+
+      <!-- COMPLEMENT -->
+      <div class="form-group col-md-4" [ngClass]="checkError('complement')">
+        <label class="form-control-label" for="complement">Complemento</label>
+        <input type="text" class="form-control" formControlName="complement" id="complement" placeholder="Ex: Apto 48" maxlength="20">        
+      </div>
     </div>
 
-    <div class="form-group" [ngClass]="checkError('cpf')">
-      <label class="form-control-label" for="name">CPF</label>
-      <input type="text" class="form-control" formControlName="cpf" id="cpf" placeholder="Telefone preferencial">      
-      <div *ngIf="touchedVerify('cpf')" class="form-control-feedback">Por favor, insira o número do telefone.</div>      
+    <div class="row">
+
+      <!-- NEIGHBORHOOD -->
+      <div class="form-group col-md-4" [ngClass]="checkError('neighborhood')">
+        <label class="form-control-label" for="neighborhood">Bairro <em>*</em></label>
+        <input type="text" class="form-control input-readonly" formControlName="neighborhood" id="neighborhood" placeholder="" tabindex="-1" maxlength="70" readonly>
+        <div *ngIf="touchedVerify('neighborhood')" class="form-control-feedback"></div>
+      </div>
+
+      <!-- STATE -->
+      <div class="form-group col-md-4" [ngClass]="checkError('state')">
+        <label class="form-control-label" for="state">Estado <em>*</em></label>
+        <input type="text" class="form-control input-readonly" formControlName="state" id="state" placeholder="" tabindex="-1" readonly>
+        <div *ngIf="touchedVerify('state')" class="form-control-feedback"></div>
+      </div>
+
+      <!-- CITY -->
+      <div class="form-group col-md-4" [ngClass]="checkError('city')">
+        <label class="form-control-label" for="city">Cidade <em>*</em></label>
+        <input type="text" class="form-control input-readonly" formControlName="city" id="city" placeholder="" tabindex="-1" readonly>
+        <div *ngIf="touchedVerify('city')" class="form-control-feedback"></div>
+      </div>
     </div>
 
+    <!-- REFERENCE -->
+    <div class="row">
+      <div class="form-group col-md-12" [ngClass]="checkError('reference')">
+        <label class="form-control-label" for="reference">Ponto de Referência</label>
+        <input type="text" class="form-control" formControlName="reference" id="reference" placeholder="Ex: Ao lado da farmácia" maxlength="70">        
+      </div>
+    </div>
+
+    <br>
     <button type="button" class="btn btn-secondary" (click)="formReset()">Clean</button>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!newCustomerForm.valid">Submit</button>
   </form>
-
-  <hr>
-  {{ newCustomerForm.valid }} <br>		
-  {{ newCustomerForm.value | json }}
 
 </div>
