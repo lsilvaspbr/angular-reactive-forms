@@ -6,4 +6,8 @@ Formulário em Angular 4 com validação dos campos, máscaras de cpf, telefone 
 
 ![image](https://user-images.githubusercontent.com/29076312/37476187-4921b9bc-2853-11e8-8956-33e8dd4565d7.png)
 
+HTML, CSS, Javascript, Typescript, Angular 4.
+
+demo http://lweb.com.br/angular-reactive-forms/
+
 
